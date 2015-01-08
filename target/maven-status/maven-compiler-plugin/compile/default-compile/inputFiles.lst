@@ -1,0 +1,10 @@
+/Users/wgoette/src/sts-workspace/std/library/src/main/java/info/localzone/communication/model/Header.java
+/Users/wgoette/src/sts-workspace/std/library/src/main/java/info/localzone/communication/model/Location.java
+/Users/wgoette/src/sts-workspace/std/library/src/main/java/info/localzone/util/GeoUtils.java
+/Users/wgoette/src/sts-workspace/std/library/src/main/java/info/localzone/pref/Pref.java
+/Users/wgoette/src/sts-workspace/std/library/src/main/java/info/localzone/util/RedisUtils.java
+/Users/wgoette/src/sts-workspace/std/library/src/main/java/info/localzone/communication/model/Message.java
+/Users/wgoette/src/sts-workspace/std/library/src/main/java/info/localzone/communication/model/Address.java
+/Users/wgoette/src/sts-workspace/std/library/src/main/java/info/localzone/communication/model/Actor.java
+/Users/wgoette/src/sts-workspace/std/library/src/main/java/info/localzone/communication/model/Payload.java
+/Users/wgoette/src/sts-workspace/std/library/src/main/java/info/localzone/communication/model/Place.java
