@@ -9,6 +9,13 @@ public class Location {
 		this.longitude = longitude;
 		this.accuracy = accuracy;
 	}
+	
+	public Location(double latitude, double longitude) {
+		super();
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.accuracy = new Integer(-1);
+	}
 	public Location() {
 		super();
 		

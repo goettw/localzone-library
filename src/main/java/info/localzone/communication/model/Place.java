@@ -1,5 +1,8 @@
 package info.localzone.communication.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Place {
 	public String getId() {
@@ -7,6 +10,7 @@ public class Place {
 	}
 	public Place() {
 		address = new Address();
+		phoneNumberList = new ArrayList<PhoneNumber>();
 	}
 	public void setId(String id) {
 		this.id = id;
@@ -14,8 +18,23 @@ public class Place {
 	double lat,lon;
 	String display_name;
 	String type;
+	String webSite;
+	List<PhoneNumber> phoneNumberList;
+	String primaryEmailAddress;
+	String username;
+	String passwordHash;
 	Address address;
 	String id;
+	String originId;
+	
+	
+	
+	public String getOriginId() {
+		return originId;
+	}
+	public void setOriginId(String originId) {
+		this.originId = originId;
+	}
 	public double getLat() {
 		return lat;
 	}
