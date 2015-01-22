@@ -10,22 +10,53 @@ public class Place {
 	}
 	public Place() {
 		address = new Address();
-		phoneNumberList = new ArrayList<PhoneNumber>();
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getWebSite() {
+		return webSite;
+	}
+	public void setWebSite(String webSite) {
+		this.webSite = webSite;
+	}
+	
+	public String getPrimaryEmailAddress() {
+		return primaryEmailAddress;
+	}
+	public void setPrimaryEmailAddress(String primaryEmailAddress) {
+		this.primaryEmailAddress = primaryEmailAddress;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getPasswordHash() {
+		return passwordHash;
+	}
+	public void setPasswordHash(String passwordHash) {
+		this.passwordHash = passwordHash;
 	}
 	double lat,lon;
 	String display_name;
 	String type;
 	String webSite;
-	List<PhoneNumber> phoneNumberList;
+	String phoneNumber;
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
 	String primaryEmailAddress;
 	String username;
 	String passwordHash;
 	Address address;
 	String id;
 	String originId;
+	
 	
 	
 	

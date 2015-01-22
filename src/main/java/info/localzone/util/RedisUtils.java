@@ -2,6 +2,7 @@ package info.localzone.util;
 
 import info.localzone.communication.model.Place;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -21,7 +22,9 @@ public class RedisUtils {
 	private static String REDIS_PLACE_FIELD_JSON ="json";
 	private static String REDIS_PLACE_BY_ORGIN="PLACE-BY-ORIGN:";
 	private static String REDIS_HOMEZONE="HOMEZONE30:";
+	private static String REDIS_HOMEZONE_TYPES="HOMEZONE_TYPES:";
 	private static String PLACES_INZONE="PLACES-INZONE";
+	private static String PLACES_INZONE_TYPES="PLACES-INZONE_TYPES";
 	
 	
 	public static String PLACE_ID_COUNTER="PLACE_ID_COUNTER"; // used for generation of all keys
@@ -36,7 +39,7 @@ public class RedisUtils {
 	public static void putToOpenStreetResultCache (StringRedisTemplate redisTemplate, String id, String value){	
 		String key = REDIS_OPENSTREETMAP_CACHEENTRY + id;
 		redisTemplate.opsForValue().set( key,value);
-		redisTemplate.expire(key, 1, TimeUnit.MINUTES);
+		redisTemplate.expire(key, 10, TimeUnit.MINUTES);
 	}
 	
 	public static String getFromOpenStreetResultCache (StringRedisTemplate redisTemplate, String id){
@@ -61,34 +64,55 @@ public class RedisUtils {
 		ops.put(REDIS_PLACE_FIELD_LON, Double.toString(place.getLon()));
 		ops.put(REDIS_PLACE_FIELD_JSON, json);
 	
-		BoundSetOperations<String, String> setOps = redisTemplate.boundSetOps(REDIS_HOMEZONE+geohash);
+		BoundSetOperations<String, String> setOps = redisTemplate.boundSetOps(REDIS_HOMEZONE+geohash+place.getType());
 		setOps.add(place.getId());
-		
-		
+		BoundSetOperations<String, String> setOpsTypes = redisTemplate.boundSetOps(REDIS_HOMEZONE_TYPES+geohash);
+		setOpsTypes.add(place.getType());	
 	}
 	
-	private static String getInzoneKey (double radius, int precision, String hashcode) {
+	public static Set<String>  readHomezoneTypes (StringRedisTemplate redisTemplate, String geohash) {
+		return  redisTemplate.opsForSet().members(REDIS_HOMEZONE_TYPES+geohash);
+	}
+	
+	private static String getInzoneKey (double radius, int precision, String hashcode, String type) {
 		String radiusString = Double.toString(radius);
 		String precisionString = Integer.toString(precision);
-		return PLACES_INZONE+"-"+radiusString+"-"+precisionString+"-"+hashcode;
+		return PLACES_INZONE+"-"+radiusString+"-"+precisionString+"-"+hashcode+type;
+	}
+	
+	private static String getInzoneTypes (double radius, int precision, String hashcode) {
+		String radiusString = Double.toString(radius);
+		String precisionString = Integer.toString(precision);
+		return PLACES_INZONE_TYPES+"-"+radiusString+"-"+precisionString+"-"+hashcode;
 	}
 	
 	
-	public static void writeToInzoneCache (StringRedisTemplate redisTemplate, String placeId, List<String> hashList, double radius, int precision) {
+	public static void writeToInzoneCache (StringRedisTemplate redisTemplate, String placeId, String type, List<String> hashList, double radius, int precision) {
 		for (String hashcode : hashList) {
-			redisTemplate.opsForSet().add(getInzoneKey(radius,precision,hashcode), placeId);
+			redisTemplate.opsForSet().add(getInzoneKey(radius,precision,hashcode,type), placeId);
+			redisTemplate.opsForSet().add(getInzoneTypes(radius,precision,hashcode), type);
+			
 		}
 	}
 	
-	public static Set<String> readInzonePlacesCache (StringRedisTemplate redisTemplate,String hashcode,double radius, int precision) {
-		return  redisTemplate.opsForSet().members(getInzoneKey(radius, precision, hashcode));
+	public static Set<String> readInzonePlacesCache (StringRedisTemplate redisTemplate,  String hashcode, String type, double radius, int precision) {
+		return  redisTemplate.opsForSet().members(getInzoneKey(radius, precision, hashcode, type));
+	}
+	
+	public static Set<String> readInzonePlacesTypes (StringRedisTemplate redisTemplate,  String hashcode, double radius, int precision) {
+		return  redisTemplate.opsForSet().members(getInzoneTypes(radius, precision, hashcode));
 	}
 	
 	public static String readPlace (StringRedisTemplate redisTemplate, String id) {
-		if (!redisTemplate.hasKey(REDIS_PLACE_HM+id))
+		return readPlaceByKey (redisTemplate,REDIS_PLACE_HM+id);
+	}
+	
+	private static String readPlaceByKey (StringRedisTemplate redisTemplate, String key) {
+		if (!redisTemplate.hasKey(key))
 			return null;
-		BoundHashOperations<String , String, String> ops = redisTemplate.boundHashOps(REDIS_PLACE_HM+id);
+		BoundHashOperations<String , String, String> ops = redisTemplate.boundHashOps(key);
 		return ops.get(REDIS_PLACE_FIELD_JSON);
+	
 	}
 	
 	public static void writeToPlaceOriginLookup (StringRedisTemplate redisTemplate, String originId, String placeId) {
@@ -97,6 +121,16 @@ public class RedisUtils {
 	
 	public static String lookupPlaceByOriginId (StringRedisTemplate redisTemplate, String originId) {
 		return redisTemplate.opsForValue().get(REDIS_PLACE_BY_ORGIN+originId);
+	}
+	
+	public static List <String> getAllPlacesAsJsonStrings (StringRedisTemplate redisTemplate) {
+		Set <String> placeKeys = redisTemplate.keys(REDIS_PLACE_HM+"*");
+		ArrayList<String> placeList = new ArrayList<String>();
+		for (String key : placeKeys) {
+			
+			placeList.add(readPlaceByKey(redisTemplate, key));
+		}
+		return placeList;
 	}
 	
 }
