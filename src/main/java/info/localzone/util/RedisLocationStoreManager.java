@@ -33,6 +33,14 @@ public class RedisLocationStoreManager {
 	public boolean isPopulated (String homezoneId) {
 		return RedisUtils.isPopulated(redisTemplate, homezoneId);
 	}
+	
+	public int channelMemberCount (String homezoneId, String channelId) {
+		return RedisUtils.channelMemberCount(redisTemplate, homezoneId, channelId);
+	}
+	public Set<String> readPlacesByTypeList (List<String> geoHashList, List<String> channelIdList) {
+		return RedisUtils.readPlacesByTypeList(redisTemplate, geoHashList, channelIdList);
+	}
+	
 	public String readPlace(String id) {
 		return RedisUtils.readPlace(redisTemplate, id);
 	}

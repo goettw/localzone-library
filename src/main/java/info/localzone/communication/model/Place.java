@@ -1,7 +1,5 @@
 package info.localzone.communication.model;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Place {
@@ -20,7 +18,13 @@ public class Place {
 	public void setWebSite(String webSite) {
 		this.webSite = webSite;
 	}
+	public double getLat() {
+		return position[0];
+	}
 	
+	public double getLon() {
+		return position[1];
+	}
 	public String getPrimaryEmailAddress() {
 		return primaryEmailAddress;
 	}
@@ -39,9 +43,16 @@ public class Place {
 	public void setPasswordHash(String passwordHash) {
 		this.passwordHash = passwordHash;
 	}
-	double lat,lon;
+	double [] position;
 	String display_name;
 	String type;
+	String subType;
+	public String getSubType() {
+		return subType;
+	}
+	public void setSubType(String subType) {
+		this.subType = subType;
+	}
 	String webSite;
 	String phoneNumber;
 	public String getPhoneNumber() {
@@ -66,17 +77,12 @@ public class Place {
 	public void setOriginId(String originId) {
 		this.originId = originId;
 	}
-	public double getLat() {
-		return lat;
+
+	public double[] getPosition() {
+		return position;
 	}
-	public void setLat(double lat) {
-		this.lat = lat;
-	}
-	public double getLon() {
-		return lon;
-	}
-	public void setLon(double lon) {
-		this.lon = lon;
+	public void setPosition(double[] position) {
+		this.position = position;
 	}
 	public String getDisplay_name() {
 		return display_name;
